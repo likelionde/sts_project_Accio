@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+<meta charset="EUC-KR">
+<title>ACCIO</title>
+<!-- bootstrap -->
+<link href="bootstrap/css/lumos.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+#center { 
+	text-align:center;
+	color:white;
+	padding-top: 20%;
+}
+body {
+	height: 100%; 
+	font-family: 'Henny Penny', cursive; 
+	background-color: #000; 
+	background-repeat: no-repeat;
+	background-position: 50% 50%; 
+	background-image: url('img/ff.jpg');
+}
+</style>
+<body>
+		
+		<div id="center">
+			<p style="font-size:150px;">LUMOS</p>
+			<a href="/lumos/sale/salelist.do" class="btn btn-first" style="font-size: 50px;">ACCIO</a>
+		</div>
+
+
+</body>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$("body").mousemove(function(e){
+			$("body").css('background-position',(e.pageX - 140)+'px '+(e.pageY - 140)+'px');
+		});
+	});
+</script>
+</html>

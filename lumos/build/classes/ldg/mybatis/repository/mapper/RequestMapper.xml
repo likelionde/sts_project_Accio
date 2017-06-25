@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.RequestMapper">
+	
+  <cache />
+
+<resultMap id="selectMap" type="Request">
+	<result column="req_id" property="req_id" jdbcType="NUMERIC"/>
+  	<association property="user" column="u_id" javaType="User">
+		<id property="u_id" column="u_id"/>
+		<result column="u_id" property="u_id" jdbcType="NUMERIC"/>
+		<result column="stu_num" property="stu_num" />
+	</association>
+	<association property="sale" column="s_id" javaType="Sale">
+		<id property="s_id" column="s_id"/>
+		<result column="s_id" property="s_id" jdbcType="NUMERIC"/>
+		<result column="title" property="title"/>
+	</association>
+  </resultMap>
+  
+<insert id="insertRequest" parameterType="Request">
+    INSERT INTO REQUEST(s_id, u_id)
+	VALUES (#{sale.s_id},#{user.u_id})
+  </insert>
+
+  <delete id="deleteRequest" parameterType="hashmap">
+    DELETE FROM REQUEST
+	WHERE s_id = #{s_id} AND u_id = #{u_id}
+  </delete>
+  
+  <select id="selectRequestById" parameterType="int" resultType="int">
+    SELECT count(*) FROM REQUEST where s_id = #{s_id}
+  </select>
+	
+	<select id="selectRequest" parameterType="int" resultMap="selectMap">
+	SELECT req_id, r.s_id, r.u_id, u.stu_num
+	FROM REQUEST r, LUMOS_USERS u, SALE s
+	WHERE r.s_id = #{s_id} AND r.u_id = u.u_id
+	</select>
+	<select id="selectRequestByPrimaryKey" parameterType="int" resultMap="selectMap">
+	SELECT r.s_id, r.u_id, u.stu_num, s.title
+	FROM REQUEST r, LUMOS_USERS u, SALE s
+	WHERE req_id = #{req_id} AND r.u_id = u.u_id AND r.s_id = s.s_id
+	</select>
+	<select id="selectRequestByS_id" parameterType="int" resultMap="selectMap">
+	SELECT req_id
+	FROM REQUEST
+	WHERE s_id = #{s_id}
+	</select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.LikeMapper">
+	
+  <cache />
+
+  <select id="selectLikeById" parameterType="int" resultType="int">
+    SELECT count(*) FROM LIKES where u_id = #{u_id}
+  </select>
+
+  <select id="selectLikeByTwoId" parameterType="hashmap" resultType="int">
+	 SELECT count(*) FROM LIKES where u_id = #{u_id} and push_id = #{push_id}
+   </select>
+	
+</mapper>

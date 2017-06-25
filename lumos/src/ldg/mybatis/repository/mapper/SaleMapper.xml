@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.SaleMapper">
+	
+  <cache />
+  
+  <resultMap id="selectMap" type="Sale">
+	<result column="s_id" property="s_id" jdbcType="NUMERIC"/>
+	<result column="title" property="title"/>
+	<result column="content" property="content"/>
+	<result column="price" property="price"/>
+	<result column="transport" property="transport"/>
+	<result column="s_date" property="s_date" />
+	<result column="img" property="img" />
+	<result column="flag" property="flag" jdbcType="NUMERIC"/>
+	<association property="user" column="u_id" javaType="User">
+		<id property="u_id" column="u_id"/>
+		<result column="u_id" property="u_id" jdbcType="NUMERIC"/>
+		<result column="stu_num" property="stu_num" />
+	</association>
+  </resultMap>
+
+ <select id="insertSale" parameterType="Sale">
+  	INSERT INTO sale(s_id, u_id, title, content, price, transport, s_date, img) 
+  	VALUES (#{s_id}, #{user.u_id}, #{title}, #{content}, #{price}, #{transport}, #{s_date}, #{img})
+  </select>
+  
+	<select id="selectSale" resultMap="selectMap">
+    SELECT s_id, s.u_id, title, content, price, transport, s_date, u.stu_num, img, s.flag
+	FROM SALE s, LUMOS_USERS u
+	WHERE s.u_id = u.u_id
+	order by s_id desc
+  </select>
+  
+ 
+ <select id="selectSaleByUserId" parameterType="int" resultMap="selectMap">
+    SELECT s_id, s.u_id, title, content, price, transport, s_date, u.stu_num, img, s.flag
+	FROM SALE s, LUMOS_USERS u
+	WHERE s.u_id = #{u_id} AND s.u_id = u.u_id
+  </select>
+  
+  <select id="selectSaleByPrimaryKey" parameterType="int" resultMap="selectMap">
+    SELECT s_id, s.u_id, title, content, price, transport, s_date, u.stu_num, img, s.flag
+	FROM SALE s, LUMOS_USERS u
+	WHERE s.s_id = #{s_id} AND s.u_id = u.u_id
+  </select>
+  
+  <update id="updateSale" parameterType="Sale">
+    UPDATE SALE
+	SET title = #{title}, content = #{content}, price = #{price}, transport = #{transport}, s_date = #{s_date}, img = #{img}
+	WHERE s_id = #{s_id}
+  </update>
+  
+  <select id="selectSaleByCondition" parameterType="Condition" resultMap="selectMap">
+  	select s_id, s.u_id, title, content, price, transport, s_date, u.stu_num, s.flag
+	from sale s, lumos_users u
+	<where>
+		<if test="img != null">
+			img is not null and
+		</if>
+		<if test="title != null">
+			title like '%' || #{title} || '%' and
+		</if>
+		<if test="stu_num != null">
+			u.stu_num like '%' || #{stu_num} || '%' and
+		</if>
+		<if test="transport != null">
+			<if test="transport == '직거래'">
+				transport like '직%' and
+			</if>
+			<if test="transport == '택배'">
+				transport like '택%' and
+			</if>
+		</if> 
+			price BETWEEN #{priceStart} and #{priceEnd} and
+			s.u_id = u.u_id 
+		<if test="like == null">
+			order by s_date desc
+		</if>
+		<if test="like == 'like'">
+			order by u.like_cnt desc
+		</if>
+	</where>
+  </select>
+</mapper>

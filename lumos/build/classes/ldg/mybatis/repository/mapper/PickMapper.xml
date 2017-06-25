@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.PickMapper">
+
+ <cache />
+	
+	<resultMap type="Pick" id="selectMap">
+	<result column="p_id" jdbcType="NUMERIC" property="p_id" />
+	<association property="user" column="u_id" javaType="User">
+		<id property="u_id" column="u_id"/>
+		<result column="u_id" property="u_id" jdbcType="NUMERIC"/>
+		<result column="stu_num" property="stu_num" />
+	</association>
+	<association property="sale" column="s_id" javaType="Sale">
+		<id property="s_id" column="s_id"/>
+		<result column="s_id" property="s_id" jdbcType="NUMERIC"/>
+		<result column="title" property="title"/>
+		<result column="s_date" property="s_date" />
+	</association>
+	
+	</resultMap>
+
+  <insert id="insertPick" parameterType="Pick">
+  	INSERT INTO PICK(u_id, s_id) VALUES (#{user.u_id}, #{sale.s_id})
+  </insert>
+  
+  <select id="selectPickById" parameterType="int" resultMap="selectMap">
+    SELECT s.title, s.s_id, p.p_id, s.s_date FROM PICK p, LUMOS_USERS u, SALE s 
+    where p.u_id = #{user.u_id} AND p.s_id = s.s_id
+  </select>
+
+  <select id="selectPickByTwoId" parameterType="Pick" resultType="int">
+	 SELECT count(*) FROM PICK where u_id = #{user.u_id} and s_id = #{sale.s_id}
+   </select>
+
+ <delete id="deletePick" parameterType="Pick">
+	DELETE FROM PICK
+	WHERE s_id = #{sale.s_id} AND u_id = #{user.u_id} 
+	</delete>
+<delete id="deletePickByU_id" parameterType="int">
+	DELETE FROM PICK
+	WHERE u_id = #{u_id}
+</delete>
+<delete id="deletePickByP_id" parameterType="int">
+	DELETE FROM PICK
+	WHERE p_id = #{p_id}
+</delete>
+<select id="selectPickByS_id" parameterType="int" resultMap="selectMap">
+	SELECT p.p_id
+	FROM PICK p, SALE s
+	WHERE p.s_id = #{s_id} AND s.s_id = p.s_id
+</select>
+</mapper>
+

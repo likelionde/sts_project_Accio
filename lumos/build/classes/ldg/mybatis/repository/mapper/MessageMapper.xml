@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.MessageMapper">
+	
+  <cache />
+
+  <select id="selectSendMessage" parameterType="String" resultMap="selectMap">
+	SELECT m_id, contents, m_date, rec_user, send_user, flag
+	FROM MESSAGE 
+	WHERE send_user = #{u_num}
+	order by m_date desc
+</select>
+<select id="selectRecMessage" parameterType="String" resultMap="selectMap">
+	SELECT m_id, contents, m_date, rec_user, send_user, flag
+	FROM MESSAGE 
+	WHERE rec_user = #{u_num}
+	order by m_date desc
+</select>
+<select id="selectMessageByPrimaryKey" parameterType="int" resultMap="selectMap">
+    SELECT m_id, contents, m_date, rec_user, send_user, flag
+	FROM MESSAGE	
+	WHERE m_id = #{m_id}
+  </select>
+  <update id="flagMessage" parameterType="int">
+	UPDATE MESSAGE
+	SET flag = 1
+	WHERE m_id = #{m_id}
+</update>
+<insert id="insertMessage" parameterType="Message">
+ 	INSERT INTO MESSAGE(m_id, contents, m_date, rec_user, send_user)
+ 	VALUES (#{m_id}, #{contents}, #{m_date}, #{rec_user}, #{send_user})
+</insert>
+<resultMap id="selectMap" type="Message">
+	<result column="m_id" property="m_id" jdbcType="NUMERIC"/>
+	<result column="contents" property="contents"/>
+	<result column="m_date" property="m_date"/>
+	<result column="rec_user" property="rec_user" />
+	<result column="send_user" property="send_user" />
+	<result column="flag" property="flag" jdbcType="NUMERIC"/>
+</resultMap>
+<!-- 탈퇴시 message 보낸사람받는사람 '알수없음' 으로 바꿈 -->
+	<update id="updateMessageRecvUser" parameterType="String">
+		UPDATE MESSAGE
+		SET rec_user = '알수없음'
+		WHERE rec_user = #{stu_num}
+	</update>
+	<update id="updateMessageSendUser" parameterType="String">
+		UPDATE MESSAGE
+		SET send_user = '알수없음'
+		WHERE send_user = #{stu_num}
+	</update>
+	
+</mapper>

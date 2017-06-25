@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldg.mybatis.repository.mapper.SaleInfoMapper">
+	
+  <cache />
+  
+  <resultMap id="selectMap" type="SaleInfo">
+  	<result column="info_id" property="info_id" jdbcType="NUMERIC"/>
+	<association property="user" column="u_id" javaType="User">
+		<id property="u_id" column="u_id"/>
+		<result column="u_id" property="u_id" jdbcType="NUMERIC"/>
+		<result column="stu_num" property="stu_num" />
+	</association>
+	<association property="sale" column="s_id" javaType="Sale">
+		<id property="s_id" column="s_id"/>
+		<result column="s_id" property="s_id" jdbcType="NUMERIC"/>
+		<result column="title" property="title"/>
+	</association>
+  </resultMap>
+
+
+<select id="selectInfoByPrimayKey" parameterType="int" resultMap="selectMap">
+	SELECT info_id, si.s_id, si.u_id, info_date, u.stu_num, s.title
+	FROM SALE_INFO si, LUMOS_USERS u, SALE s
+	WHERE si.info_id = #{info_id} AND si.u_id = u.u_id AND si.s_id = s.s_id  
+	</select>
+	<select id="selectSaleInfoByS_Id" parameterType="int" resultMap="selectMap">
+	SELECT info_id, si.s_id, si.u_id, info_date, u.stu_num, s.title
+	FROM SALE_INFO si, LUMOS_USERS u, SALE s
+	WHERE si.s_id = #{s_id} AND si.u_id = u.u_id AND si.s_id = s.s_id
+	</select>
+	
+	<select id="selectSaleInfoById" parameterType="int" resultMap="selectMap">
+    SELECT si.u_id, s.title, si.info_id, si.s_id
+	FROM SALE_INFO si, LUMOS_USERS u, SALE s
+	WHERE si.u_id = #{u_id} AND si.u_id = u.u_id AND si.s_id = s.s_id
+  </select>
+  
+  <delete id="deleteSaleInfo" parameterType="hashmap">
+    DELETE FROM SALE_INFO
+	WHERE s_id = #{s_id} AND u_id = #{u_id}
+  </delete>
+  <delete id="deleteSaleInfoByU_id" parameterType="int">
+  	DELETE FROM SALE_INFO
+	WHERE u_id = #{u_id}
+  </delete>
+  <delete id="deleteSaleInfoByInfo_id" parameterType="int">
+  DELETE FROM SALE_INFO
+	WHERE info_id = #{info_id}
+  </delete>
+  <select id="selectByS_Id" parameterType="int" resultMap="selectMap">
+   SELECT info_id
+   FROM SALE_INFO si, SALE s
+	WHERE si.s_id = #{s_id} AND si.s_id = s.s_id
+  </select>
+  
+</mapper>
